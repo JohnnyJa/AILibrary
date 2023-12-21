@@ -2,7 +2,6 @@ using System.Net.Mime;
 using System.Numerics;
 using AILibrary.AIMovement;
 using AILibrary.AIMovement.Model;
-using AILibrary.Movement;
 using AILibrary.Static;
 using ZeroElectric.Vinculum;
 
@@ -10,7 +9,6 @@ namespace AILibrary.Pawn;
 
 public class Pawn : Kinematic
 {
-    private BaseMovement _movement;
     Texture _texture;
     // public float RotationAngle { get; set; }
     // public Vector2 CurrentPosition { get; set; }
@@ -21,7 +19,6 @@ public class Pawn : Kinematic
     public Pawn(Texture texture, Kinematic current)
     {
         _texture = texture;
-        _movement = new BaseMovement(1f, 1);
         Position = current.Position;
         Orientation = current.Orientation;
     }
