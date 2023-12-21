@@ -8,7 +8,8 @@ public interface IBehaviorMovement
 {
     public void SetTargetPosition(Vector2 target);
     public void SetCharacter(Kinematic character);
-    public void SetTargetOrientation(Vector2 targetOrientation);
+    public void SetTargetOrientation(float targetOrientation);
+    
     public SteeringOutput? GetSteering();
     void SetTargetVelocity(Vector2 targetVelocity);
 }

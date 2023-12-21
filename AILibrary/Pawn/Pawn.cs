@@ -51,14 +51,14 @@ public class Pawn : Kinematic
         _behaviorMovement.SetCharacter(_kinematic);
     }
     
-    public void SetTargetLocation(Vector2 targetPosition)
+    public void SetTargetPosition(Vector2 targetPosition)
     {
         _behaviorMovement.SetTargetPosition(targetPosition);
     }
     
-    public void SetTargetOrientation(Vector2 targetOrientation)
+    public void SetTargetOrientation(float targetOrientation)
     {
-        _behaviorMovement.SetTargetOrientation(targetOrientation - _kinematic.Position);
+        _behaviorMovement.SetTargetOrientation(targetOrientation);
     }
     
     public void SetTargetVelocity(Vector2 targetVelocity)

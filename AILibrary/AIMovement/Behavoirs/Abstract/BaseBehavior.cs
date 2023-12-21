@@ -19,13 +19,18 @@ public abstract class BaseBehavior : IBehaviorMovement
         Character = character;
     }
 
-    public void SetTargetOrientation(Vector2 targetOrientation)
+    public virtual void SetTargetOrientation(float targetOrientation)
     {
         if (Target == null)
         {
             throw new Exception("Enable to set target to this algo");
         }
-        Target.Orientation = GetNewOrientation(Character.Orientation, targetOrientation);
+        Target.Orientation = targetOrientation;
+    }
+
+    public virtual void SetPointToOrientateOn(Vector2 targetOrientation)
+    {
+        throw new Exception("Enable to set target to this algo");
     }
 
 
@@ -39,7 +44,7 @@ public abstract class BaseBehavior : IBehaviorMovement
         Target.Velocity = targetVelocity;
     }
 
-    public void SetTargetPosition(Vector2 target)
+    public virtual void SetTargetPosition(Vector2 target)
     {
         if (Target == null)
         {
@@ -58,5 +63,12 @@ public abstract class BaseBehavior : IBehaviorMovement
         {
             return currentOrientation;
         }
+    }
+    
+    protected float RandomBinomial()
+    {
+        var rand = new Random();
+        
+        return (float)(rand.NextDouble() - rand.NextDouble());
     }
 }
