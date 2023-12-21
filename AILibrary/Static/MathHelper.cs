@@ -5,13 +5,21 @@ namespace AILibrary.Static;
 public class MathHelper
 {
     public static float Rad2Deg { get; set; } = 180 / MathF.PI;
-    public static float WrapAngle(float angle)
+    public static float WrapAngle(float radians)
     {
-        if (angle >= MathF.PI || angle <= -MathF.PI)
+        radians %= 2 * MathF.PI;
+
+        if (radians > MathF.PI)
         {
-            angle *= -1;
-        } 
-        return angle;
+            radians -= 2 * MathF.PI;
+        }
+
+        if (radians <= -MathF.PI)
+        {
+            radians += 2 * MathF.PI;
+        }
+
+        return radians;
     }
     
     public static float GetNewOrientation(float currentOrientation, Vector2 velocity)

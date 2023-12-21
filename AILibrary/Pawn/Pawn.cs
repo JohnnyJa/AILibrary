@@ -13,12 +13,14 @@ public class Pawn : Kinematic
     private readonly Texture _texture;
 
     public float MaxSpeed { get; set; } = 50f;
+
+    public float MaxAcceleration { get; set; } = 10f;
     // public float RotationAngle { get; set; }
     // public Vector2 CurrentPosition { get; set; }
     // public Vector2 TargetPosition { get; set; }
     // public float TargetRotation { get; set; }
 
-    private IMovement _movement;
+    private IBehaviorMovement _behaviorMovement;
     bool isSpawned = false;
     
     private Kinematic _kinematic;
@@ -26,12 +28,12 @@ public class Pawn : Kinematic
     {
         _texture = texture;
         _kinematic = new Kinematic();
-        _movement = new KinematicEmpty();
+        _behaviorMovement = new EmptyBehavior();
     }
 
     public virtual void Tick()
     {
-        var steering = _movement.GetSteering();
+        var steering = _behaviorMovement.GetSteering();
         // _kinematic = _movement.Character;
         _kinematic.Update(steering, MaxSpeed);
         Draw();
@@ -43,20 +45,30 @@ public class Pawn : Kinematic
         isSpawned = true;
     }
     
-    public void SetMovementBehavior(IMovement movement)
+    public void SetMovementBehavior(IBehaviorMovement behaviorMovement)
     {
-        _movement = movement;
-        _movement.SetParams(_kinematic, MaxSpeed);
+        _behaviorMovement = behaviorMovement;
+        _behaviorMovement.SetCharacter(_kinematic);
     }
     
     public void SetTargetLocation(Vector2 targetPosition)
     {
-        _movement.SetTarget(targetPosition);
+        _behaviorMovement.SetTargetPosition(targetPosition);
+    }
+    
+    public void SetTargetOrientation(Vector2 targetOrientation)
+    {
+        _behaviorMovement.SetTargetOrientation(targetOrientation - _kinematic.Position);
+    }
+    
+    public void SetTargetVelocity(Vector2 targetVelocity)
+    {
+        _behaviorMovement.SetTargetVelocity(targetVelocity);
     }
     
     private void Draw()
     {
-        Console.WriteLine($"{_kinematic.Position}, {_kinematic.Orientation}, {_kinematic.Velocity}, {_kinematic.Rotation}");
+        Console.WriteLine($" Current orientation: {_kinematic.Orientation}\n");
         
         Raylib.DrawTexturePro(_texture,
             new Rectangle(0, 0, _texture.width, _texture.height){  },

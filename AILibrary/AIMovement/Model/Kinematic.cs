@@ -19,6 +19,8 @@ public class Kinematic
         
         if (steering == null)
         {
+            Velocity = new Vector2();
+            Rotation = 0;
             return;
         }
         Position += Velocity * Raylib.GetFrameTime();

@@ -5,7 +5,7 @@ using AILibrary.AIMovement.Output;
 
 namespace AILibrary.AIMovement;
 
-public abstract class BaseKinematic : IMovement
+public abstract class BaseKinematic : IKinematicMovement
 {
     protected BaseKinematic(Kinematic? target = null)
     {
