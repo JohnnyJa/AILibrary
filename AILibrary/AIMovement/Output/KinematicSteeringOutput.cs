@@ -1,8 +1,8 @@
 using System.Numerics;
 
-namespace AILibrary.Movement;
+namespace AILibrary.AIMovement.Output;
 
-public class SteeringOutput 
+public class KinematicSteeringOutput
 {
     public Vector2 Velocity { get; set; }
     public float? Rotation { get; set; }

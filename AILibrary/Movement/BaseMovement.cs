@@ -1,15 +1,16 @@
 using System.Numerics;
+using AILibrary.AIMovement;
 using AILibrary.Static;
 using ZeroElectric.Vinculum;
 
 namespace AILibrary.Movement;
 
-public class KinematicMovement : IMovement
+public class BaseMovement
 {
     public float MovementSpeed { get ; set ; }
     public float RotationSpeed { get; set; }
 
-    public KinematicMovement(float maxSpeed, float maxRotationSpeed)
+    public BaseMovement(float maxSpeed, float maxRotationSpeed)
     {
         MovementSpeed = maxSpeed;
         RotationSpeed = maxRotationSpeed;
@@ -28,7 +29,7 @@ public class KinematicMovement : IMovement
         
         float rotationDirection = GetDirection(currentRotation, targetRotation);
         currentRotation += rotationDirection * RotationSpeed * Raylib.GetFrameTime();
-
+        
         return currentRotation;
     }
 
