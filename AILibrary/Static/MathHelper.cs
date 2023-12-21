@@ -25,4 +25,9 @@ public class MathHelper
             return currentOrientation;
         }
     }
+    
+    public static Vector2 AsVector(float radians)
+    {
+        return new Vector2(MathF.Cos(radians), MathF.Sin(radians));
+    }
 }

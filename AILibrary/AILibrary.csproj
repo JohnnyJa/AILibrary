@@ -10,4 +10,8 @@
       <PackageReference Include="Raylib-CSharp-Vinculum" Version="5.0.0" />
     </ItemGroup>
 
+    <ItemGroup>
+      <Folder Include="AIMovement\Kinematic\" />
+    </ItemGroup>
+
 </Project>

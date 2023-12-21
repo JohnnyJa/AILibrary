@@ -16,19 +16,17 @@ public class Pawn : Kinematic
     // public float TargetRotation { get; set; }
 
 
-    public Pawn(Texture texture, Kinematic current)
+    public Pawn(Texture texture)
     {
         _texture = texture;
-        Position = current.Position;
-        Orientation = current.Orientation;
     }
     
-    // public void Spawn(Kinematic kinematic)
-    // {
-    //
-    //     Position = kinematic.Position;
-    //     Orientation = kinematic.Orientation;
-    // }
+    public void Spawn(Kinematic kinematic)
+    {
+    
+        Position = kinematic.Position;
+        Orientation = kinematic.Orientation;
+    }
 
     public virtual void Tick()
     {
@@ -36,20 +34,10 @@ public class Pawn : Kinematic
         // PerformMovement(TargetPosition);
         Draw();
     }
-
-    // private void PerformRotation(float targetRotation)
-    // {
-    //     RotationAngle = _movement.RotateTo( RotationAngle, targetRotation);
-    // }
-    //
-    // private void PerformMovement(Vector2 targetPosition)
-    // {
-    //     CurrentPosition = _movement.MoveTo(CurrentPosition, targetPosition);
-    // }
     
     private void Draw()
     {
-        Console.WriteLine(Position);
+        // Console.WriteLine(Position);
         
         Raylib.DrawTexturePro(_texture,
             new Rectangle(0, 0, _texture.width, _texture.height){  },
