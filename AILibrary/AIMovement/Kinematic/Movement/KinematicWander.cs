@@ -8,13 +8,18 @@ public class KinematicWander : BaseKinematic
 {
     private float _maxRotation;
 
-    public KinematicWander(Kinematic character, float maxSpeed, float maxRotation) : base(character, null, maxSpeed)
+    public KinematicWander(float maxRotation) : base()
     {
         _maxRotation = maxRotation;
     }
 
     public override SteeringOutput? GetSteering()
     {
+        if (Character == null)
+        {
+            throw new NullReferenceException("Character is null");
+        }
+        
         var result = new SteeringOutput
         {
             Linear = MathHelper.AsVector( Character.Orientation)

@@ -8,12 +8,17 @@ namespace AILibrary.AIMovement;
 
 public class KinematicFlee : BaseKinematic
 {
-    public KinematicFlee(Kinematic character, Kinematic target, float maxSpeed) : base(character, target, maxSpeed)
+    public KinematicFlee() : base( new Kinematic())
     {
     }
     
     public override SteeringOutput GetSteering()
     {
+        if (Character == null)
+        {
+            throw new NullReferenceException("Character is null");
+        }
+        
         SteeringOutput steering = new SteeringOutput();
         steering.Linear = Character.Position - Target.Position;
         if (steering.Linear.LengthSquared() < 1)
