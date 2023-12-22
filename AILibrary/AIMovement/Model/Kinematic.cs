@@ -33,6 +33,5 @@ public class Kinematic
         {
             Velocity = Vector2.Normalize(Velocity) * maxSpeed;
         }
-
     }
 }

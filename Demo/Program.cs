@@ -7,6 +7,7 @@ using AILibrary.AIMovement.Behavoirs.Movement;
 using AILibrary.AIMovement.Behavoirs.Movement.Delegated;
 using AILibrary.AIMovement.Behavoirs.Movement.PathFollowing;
 using AILibrary.AIMovement.Behavoirs.Movement.PathFollowing.Path;
+using AILibrary.AIMovement.Behavoirs.Movement.Position.Basic;
 using AILibrary.AIMovement.Model;
 using AILibrary.Pawn;
 using AILibrary.Static;
@@ -25,7 +26,7 @@ class Program
         Raylib.InitWindow(screenWidth, screenHeight, "Rotate Texture Towards Point");
 
         // Загрузка текстуры
-        Texture texture = Raylib.LoadTexture("C:\\Worr\\course\\AILibrary\\Demo\\assets\\arrow2.png");
+        Texture texture = Raylib.LoadTexture("C:\\Users\\Ivan\\RiderProjects\\AILibrary\\Demo\\assets\\arrow2.png");
 
         // Исходная позиция текстуры
         Vector2 currentPosition = new(screenWidth / 2f - texture.width / 2f, screenHeight / 2f - texture.height / 2f);
@@ -42,9 +43,13 @@ class Program
         };
         var target = new Kinematic();
 
-        
-        var pawn = new Pawn(texture);
-        
+        var pawns = new Pawn[]
+        {
+            new Pawn(texture),
+            new Pawn(texture)
+        };
+
+
         List<Vector2> pathPoints = new List<Vector2>
         {
             new Vector2(100, 100),
@@ -54,10 +59,20 @@ class Program
         };
 
         var path = new Path(pathPoints);
-        
-        pawn.SpawnAt(currentPosition);
-        pawn.SetMovementBehavior(new FollowPath(path, 5f));
 
+
+        pawns[0].SpawnAt(new Vector2(100, 100));
+        pawns[1].SpawnAt(new Vector2(850, 150));
+
+        pawns[0].SetMovementBehavior(new ArriveBehavior(5f, 5f, 20f, 5f));
+        pawns[1].SetMovementBehavior(new ArriveBehavior(5f, 5f, 20f, 5f));
+        
+        pawns[0].ToAvoid.Add(pawns[1]);
+        pawns[1].ToAvoid.Add(pawns[0]);
+
+
+        pawns[0].Kinematic.Velocity = new Vector2(10, 0);
+        pawns[1].Kinematic.Velocity = new Vector2(-10, 0);
         while (!Raylib.WindowShouldClose())
         {
             Vector2 mousePosition = Raylib.GetMousePosition();
@@ -66,19 +81,29 @@ class Program
             {
                 targetPoint = mousePosition;
             }
+
             
-            pawn.SetTargetPosition(targetPoint);
+            
+            pawns[0].SetTargetPosition(new Vector2(300, 100));
+            pawns[1].SetTargetPosition(new Vector2(100, 300));
+            
+            // foreach (var pawn in pawns)
+            // {
+            //     pawn.SetTargetPosition(targetPoint);
+            // }
 
             Raylib.BeginDrawing();
             foreach (var pathPoint in pathPoints)
             {
                 Raylib.DrawCircle((int)pathPoint.X, (int)pathPoint.Y, 5, Raylib.RED);
-            
             }
-            
+
             Raylib.ClearBackground(Raylib.RAYWHITE);
 
-            pawn.Tick();
+            foreach (var pawn in pawns)
+            {
+                pawn.Tick();
+            }
 
             Raylib.EndDrawing();
         }
