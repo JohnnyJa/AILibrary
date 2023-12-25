@@ -6,7 +6,7 @@ public class FollowPath : SeekBehavior
 {
     public Path.Path Path { get; set; }
 
-    public float PathOffset { get; set; } = 1;
+    public float PathOffset { get; set; } = 0;
     private float _currentParam;
     
     public FollowPath(Path.Path path, float maxAcceleration) : base(maxAcceleration)

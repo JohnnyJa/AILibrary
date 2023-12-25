@@ -35,7 +35,11 @@ public class AlignBehavior : BaseBehavior
         
         if (rotationSize < _targetRadius)
         {
-            return null;
+            return new SteeringOutput()
+            {
+                Linear = Vector2.Zero,
+                Angular = float.NaN
+            };
         }
 
         float targetRotation;

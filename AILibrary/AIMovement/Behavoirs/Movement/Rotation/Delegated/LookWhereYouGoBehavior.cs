@@ -1,3 +1,4 @@
+using System.Numerics;
 using AILibrary.AIMovement.Output;
 
 namespace AILibrary.AIMovement.Behavoirs.Movement.Delegated;
@@ -12,7 +13,11 @@ public class LookWhereYouGoBehavior : AlignBehavior
     {
         if (Character.Velocity.Length() == 0)
         {
-            return null;
+            return new SteeringOutput()
+            {
+                Linear = Vector2.Zero,
+                Angular = float.NaN
+            };
         }
         
         base.Target!.Orientation = (float)Math.Atan2(Character.Velocity.Y, Character.Velocity.X);
