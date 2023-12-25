@@ -1,10 +1,14 @@
+using System.Numerics;
+
 namespace AILibrary.Pathfinding.Node;
 
 // ReSharper disable once InconsistentNaming
-public class NodeXY : BaseNode
+public class NodeXY 
 {
-    public int X { get; set; }
-    public int Y { get; set; }
-    
-    public bool IsObstacle { get; set; }
+    public NodeXY(Vector2 position)
+    {
+        Position = position;
+    }
+
+    public Vector2 Position { get; set; }
 }

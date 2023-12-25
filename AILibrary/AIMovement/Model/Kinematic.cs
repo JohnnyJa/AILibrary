@@ -23,11 +23,20 @@ public class Kinematic
             Rotation = 0;
             return;
         }
+
+        if (float.IsNaN(steering.Angular))  
+        {
+            Rotation = 0;
+        }
+
+        else
+        {
+            Rotation += steering.Angular * Raylib.GetFrameTime();
+        }
         Position += Velocity * Raylib.GetFrameTime();
         Orientation += Rotation * Raylib.GetFrameTime();
         
         Velocity += steering.Linear * Raylib.GetFrameTime();
-        Rotation += steering.Angular * Raylib.GetFrameTime();
 
         if (Velocity.Length() > maxSpeed)
         {

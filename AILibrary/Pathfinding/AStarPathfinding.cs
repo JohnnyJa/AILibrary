@@ -1,35 +1,30 @@
-using AILibrary.Pathfinding.Interface;
+using System.Numerics;
 using AILibrary.Pathfinding.Node;
 
 namespace AILibrary.Pathfinding;
 
-public class AStarPathfinding<T> : IPathfinding<T> where T : BaseNode
+public class AStarPathfinding
 {
-    private readonly Func<T, T, int> _countHCost;
-    private readonly ILevel<T> _level;
+    private float CountHCost(NodeXY start, NodeXY goal)
+    {
+        return Vector2.Distance(start.Position, goal.Position);
+    }
 
-    private Dictionary<T, NodeValues> Nodes = new();
+    private Dictionary<NodeXY, NodeValues> Nodes = new();
 
     private class NodeValues
     {
-        public T? Parent { get; set; } = null;
-        public int GCost { get; set; } = 0;
-        public int HCost { get; set; } = 0;
+        public NodeXY? Parent { get; set; } = null;
+        public float GCost { get; set; } = 0;
+        public float HCost { get; set; } = 0;
 
-        public int FCost => GCost + HCost;
+        public float FCost => GCost + HCost;
     }
 
-
-    public AStarPathfinding(ILevel<T> level, Func<T, T, int> countHCost)
+    public IEnumerable<NodeXY>? FindPath(Graph graph, NodeXY startNode, NodeXY goal)
     {
-        _level = level;
-        _countHCost = countHCost;
-    }
-
-    public IEnumerable<T>? FindPath(T startNode, T targetNode)
-    {
-        List<T> openSet = new List<T>();
-        HashSet<T> closedSet = new HashSet<T>();
+        List<NodeXY> openSet = new List<NodeXY>();
+        HashSet<NodeXY> closedSet = new HashSet<NodeXY>();
 
         openSet.Add(startNode);
 
@@ -52,20 +47,21 @@ public class AStarPathfinding<T> : IPathfinding<T> where T : BaseNode
             openSet.Remove(currentNode);
             closedSet.Add(currentNode);
 
-            if (currentNode == targetNode)
+            if (currentNode == goal)
             {
                 return RetracePath(currentNode);
             }
 
-            foreach (T neighbor in _level.GetNeighbours(currentNode))
+            foreach (Connection connection in graph.GetConnections(currentNode))
             {
-
-                if (!_level.CanTraverse(currentNode, neighbor) || closedSet.Contains(neighbor))
+                var neighbor = connection.ToNode;
+                
+                if (closedSet.Contains(neighbor))
                 {
                     continue;
                 }
 
-                int newCostToNeighbor = Nodes[currentNode].GCost + _countHCost(currentNode, neighbor);
+                var newCostToNeighbor = Nodes[currentNode].GCost + CountHCost(currentNode, neighbor);
 
                 if (!openSet.Contains(neighbor))
                 {
@@ -73,14 +69,14 @@ public class AStarPathfinding<T> : IPathfinding<T> where T : BaseNode
                     Nodes.Add(neighbor, new NodeValues()
                     {
                         GCost = newCostToNeighbor,
-                        HCost = _countHCost(neighbor, targetNode),
+                        HCost = CountHCost(neighbor, goal),
                         Parent = currentNode
                     });
                 }
                 else if (newCostToNeighbor < Nodes[neighbor].GCost)
                 {
                     Nodes[neighbor].GCost = newCostToNeighbor;
-                    Nodes[neighbor].HCost = _countHCost(neighbor, targetNode);
+                    Nodes[neighbor].HCost = CountHCost(neighbor, goal);
                     Nodes[neighbor].Parent = currentNode;
                 }
             }
@@ -89,10 +85,10 @@ public class AStarPathfinding<T> : IPathfinding<T> where T : BaseNode
         return null; // Шлях не знайдено
     }
 
-    private IEnumerable<T> RetracePath(T endNode)
+    private IEnumerable<NodeXY> RetracePath(NodeXY endNode)
     {
-        List<T> path = new List<T>();
-        T? currentNode = endNode;
+        List<NodeXY> path = new List<NodeXY>();
+        NodeXY? currentNode = endNode;
 
         while (currentNode is not null)
         {
