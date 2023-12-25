@@ -9,6 +9,8 @@ using AILibrary.AIMovement.Behavoirs.Movement.PathFollowing;
 using AILibrary.AIMovement.Behavoirs.Movement.PathFollowing.Path;
 using AILibrary.AIMovement.Behavoirs.Movement.Position.Basic;
 using AILibrary.AIMovement.Model;
+using AILibrary.Pathfinding;
+using AILibrary.Pathfinding.Node;
 using AILibrary.Pawn;
 using AILibrary.Static;
 using ZeroElectric.Vinculum;
@@ -26,7 +28,7 @@ class Program
         Raylib.InitWindow(screenWidth, screenHeight, "Rotate Texture Towards Point");
 
         // Загрузка текстуры
-        Texture texture = Raylib.LoadTexture("C:\\Users\\Ivan\\RiderProjects\\AILibrary\\Demo\\assets\\arrow2.png");
+        Texture texture = Raylib.LoadTexture("C:\\Worr\\course\\AILibrary\\Demo\\assets\\arrow2.png");
 
         // Исходная позиция текстуры
         Vector2 currentPosition = new(screenWidth / 2f - texture.width / 2f, screenHeight / 2f - texture.height / 2f);
@@ -43,67 +45,79 @@ class Program
         };
         var target = new Kinematic();
 
-        var pawns = new Pawn[]
+
+        var pawn = new Pawn(texture);
+
+
+        var graph = new Graph();
+
+        List<NodeXY> nodes = new List<NodeXY>()
         {
-            new Pawn(texture),
-            new Pawn(texture)
+            new NodeXY(new Vector2(100, 100)),
+            new NodeXY(new Vector2(200, 300)),
+            new NodeXY(new Vector2(400, 200)),
+            new NodeXY(new Vector2(600, 400)),
+            new NodeXY(new Vector2(800, 100)),
         };
 
-
-        List<Vector2> pathPoints = new List<Vector2>
+        for (var i = 0; i < nodes.Count; i++)
         {
-            new Vector2(100, 100),
-            new Vector2(200, 300),
-            new Vector2(400, 200),
-            new Vector2(600, 400)
-        };
+            for (int j = 0; j < nodes.Count(); j++)
+            {
+                if (i == j)
+                {
+                    continue;
+                }
 
-        var path = new Path(pathPoints);
+                if (i==0 && j==3)
+                {
+                    continue;
+                }
+                graph.AddConnection(nodes[i], nodes[j], Vector2.Distance(nodes[i].Position, nodes[j].Position));
+            }
+        }
 
-
-        pawns[0].SpawnAt(new Vector2(100, 100));
-        pawns[1].SpawnAt(new Vector2(850, 150));
-
-        pawns[0].SetMovementBehavior(new ArriveBehavior(5f, 5f, 20f, 5f));
-        pawns[1].SetMovementBehavior(new ArriveBehavior(5f, 5f, 20f, 5f));
+        var pathfinding = new AStarPathfinding();
         
-        pawns[0].ToAvoid.Add(pawns[1]);
-        pawns[1].ToAvoid.Add(pawns[0]);
+        var path = new Path( pathfinding.FindPath(graph, nodes[0], nodes[3]).Select(x => x.Position).ToList());
 
+        pawn.SpawnAt(new Vector2(50, 100));
+        var steering = new BlendedSteering();
+        steering.Behaviors = new BlendedSteering.BehaviorAndWeight[]
+        {
+            new BlendedSteering.BehaviorAndWeight()
+            {
+                Behavior = new FollowPath(path, 5f),
+                Weight = 1f
+            },
+            new BlendedSteering.BehaviorAndWeight()
+            {
+                Behavior = new LookWhereYouGoBehavior(5f, 5f, 0.01f, 0.02f),
+                Weight = 1f
+            }
+        };
 
-        pawns[0].Kinematic.Velocity = new Vector2(10, 0);
-        pawns[1].Kinematic.Velocity = new Vector2(-10, 0);
+        
+        
+        // pawn.SetBlendingBehavior(steering);
+        pawn.SetBlendingBehavior(steering);
         while (!Raylib.WindowShouldClose())
         {
+            Raylib.BeginDrawing();
+
             Vector2 mousePosition = Raylib.GetMousePosition();
 
-            if (Raylib.IsMouseButtonDown(MouseButton.MOUSE_BUTTON_RIGHT))
+            foreach (var pathPoint in nodes)
             {
-                targetPoint = mousePosition;
+                Raylib.DrawCircle((int)pathPoint.Position.X, (int)pathPoint.Position.Y, 5f, Raylib.RED);
             }
 
-            
-            
-            pawns[0].SetTargetPosition(new Vector2(300, 100));
-            pawns[1].SetTargetPosition(new Vector2(100, 300));
-            
-            // foreach (var pawn in pawns)
-            // {
-            //     pawn.SetTargetPosition(targetPoint);
-            // }
+            // pawn.SetTargetPosition(targetPoint);
 
-            Raylib.BeginDrawing();
-            foreach (var pathPoint in pathPoints)
-            {
-                Raylib.DrawCircle((int)pathPoint.X, (int)pathPoint.Y, 5, Raylib.RED);
-            }
 
             Raylib.ClearBackground(Raylib.RAYWHITE);
 
-            foreach (var pawn in pawns)
-            {
-                pawn.Tick();
-            }
+            pawn.Tick();
 
             Raylib.EndDrawing();
         }
