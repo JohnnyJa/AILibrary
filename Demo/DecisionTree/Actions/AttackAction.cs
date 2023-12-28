@@ -1,8 +1,8 @@
 using AILibrary.DecisionMaking;
 
-namespace HelloWorld.DecisionTree.Actions;
+namespace Demo.DecisionTree.Actions;
 
-public class AttackAction : DecisionTreeAction
+public class AttackAction : DecisionAction
 {
     public AttackAction()
     {

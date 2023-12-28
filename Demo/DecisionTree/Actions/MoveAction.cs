@@ -1,8 +1,8 @@
 using AILibrary.DecisionMaking;
 
-namespace HelloWorld.DecisionTree.Actions;
+namespace Demo.DecisionTree.Actions;
 
-public class MoveAction : DecisionTreeAction
+public class MoveAction : DecisionAction
 {
     public MoveAction()
     {

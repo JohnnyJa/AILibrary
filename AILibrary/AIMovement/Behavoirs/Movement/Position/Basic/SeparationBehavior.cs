@@ -29,8 +29,6 @@ public class SeparationBehavior : BaseBehavior
             var direction =   Character.Position - target.Position;
             var distance = direction.Length();
             
-            Console.WriteLine($"distance: {distance}, _threshold: {_threshold}");
-            
             if (distance < _threshold)
             {
                 var strength = Math.Min(_decayCoefficient / (distance * distance), _maxAccelaraion);
@@ -40,7 +38,6 @@ public class SeparationBehavior : BaseBehavior
                 res.Linear += strength * direction;
             }   
         }
-        Console.WriteLine($"res.Linear: {res.Linear}");
         return res;
     }
 }

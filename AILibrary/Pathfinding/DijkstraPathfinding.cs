@@ -4,7 +4,7 @@ namespace AILibrary.Pathfinding;
 
 public class DijkstraPathfinding
 {
-    public static List<NodeXY> FindPath(Graph graph, NodeXY start, NodeXY goal)
+    public List<NodeXY> FindPath(Graph graph, NodeXY start, NodeXY goal)
     {
         // Імплементація алгоритму Dijkstra
         var open = new List<NodeRecord>();
@@ -72,7 +72,7 @@ public class DijkstraPathfinding
         return null; // Немає шляху до цільового вузла.
     }
 
-    private static List<NodeXY> ReconstructPath(NodeXY start, NodeRecord endNodeRecord)
+    private List<NodeXY> ReconstructPath(NodeXY start, NodeRecord endNodeRecord)
     {
         List<NodeXY> path = new List<NodeXY>();
 

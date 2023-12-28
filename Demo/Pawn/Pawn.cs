@@ -10,7 +10,7 @@ using AILibrary.AIMovement.Model;
 using AILibrary.AIMovement.Output;
 using AILibrary.DecisionMaking;
 using AILibrary.Static;
-using HelloWorld.DecisionTree.Actions;
+using Demo.DecisionTree.Actions;
 using HelloWorld.DecisionTree.Decisions;
 using ZeroElectric.Vinculum;
 
@@ -98,7 +98,6 @@ public class Pawn
     private void Draw()
     {
         // Console.WriteLine($" Current orientation: {Kinematic.Orientation}\n");
-        Console.WriteLine($" Current position: {Kinematic.Position}, Current velocity: {Kinematic.Velocity}\n");
         Raylib.DrawTexturePro(_texture,
             new Rectangle(0, 0, _texture.width, _texture.height){  },
             new Rectangle(Kinematic.Position.X, Kinematic.Position.Y, _texture.width, _texture.height){  },

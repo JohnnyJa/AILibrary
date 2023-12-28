@@ -14,6 +14,8 @@ using AILibrary.Pathfinding.Node;
 using AILibrary.Pawn;
 using AILibrary.Static;
 using ZeroElectric.Vinculum;
+using AILibrary.DecisionMaking.StateMachine;
+using HelloWorld.StateMachine.States;
 using Path = AILibrary.AIMovement.Behavoirs.Movement.PathFollowing.Path.Path;
 
 
@@ -77,30 +79,17 @@ class Program
             }
         }
 
-        var pathfinding = new AStarPathfinding();
+        Level.Graph = graph;
+        Level.Nodes = nodes.ToArray();
         
-        var path = new Path( pathfinding.FindPath(graph, nodes[0], nodes[3]).Select(x => x.Position).ToList());
-
+      
         pawn.SpawnAt(new Vector2(50, 100));
-        var steering = new BlendedSteering();
-        steering.Behaviors = new BlendedSteering.BehaviorAndWeight[]
-        {
-            new BlendedSteering.BehaviorAndWeight()
-            {
-                Behavior = new FollowPath(path, 5f),
-                Weight = 1f
-            },
-            new BlendedSteering.BehaviorAndWeight()
-            {
-                Behavior = new LookWhereYouGoBehavior(5f, 5f, 0.01f, 0.02f),
-                Weight = 1f
-            }
-        };
+        
 
+        var StateMachine = new AILibrary.DecisionMaking.StateMachine.StateMachine(new PatrolState(pawn));
         
         
         // pawn.SetBlendingBehavior(steering);
-        pawn.SetBlendingBehavior(steering);
         while (!Raylib.WindowShouldClose())
         {
             Raylib.BeginDrawing();
@@ -113,8 +102,11 @@ class Program
             }
 
             // pawn.SetTargetPosition(targetPoint);
-
-
+            var actions = StateMachine.Update();
+            foreach (var stateAction in actions)
+            {
+                stateAction.DoAction();
+            }
             Raylib.ClearBackground(Raylib.RAYWHITE);
 
             pawn.Tick();
